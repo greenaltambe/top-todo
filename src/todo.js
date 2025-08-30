@@ -46,8 +46,9 @@ class Todo {
 	get completed() {
 		return this._completed;
 	}
-	toggleCompleted() {
-		this._completed = !this._completed;
+
+	set completed(value) {
+		this._completed = value;
 	}
 
 	get project() {

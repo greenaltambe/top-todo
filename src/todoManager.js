@@ -47,11 +47,18 @@ const todoManager = (() => {
 		return todos.filter((todo) => todo.project === projectName);
 	};
 
+	const toggleTodo = (todo) => {
+		todo.completed = !todo.completed;
+		console.log("todo", todo);
+		save();
+	};
+
 	return {
 		addTodo,
 		deleteTodo,
 		getAllTodos,
 		getTodosByProject,
+		toggleTodo,
 	};
 })();
 

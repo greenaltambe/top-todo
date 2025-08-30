@@ -14,6 +14,7 @@ const dom = (() => {
 	);
 	const addTodoButton = document.getElementById("add-todo-button");
 	const createTodoButton = document.getElementById("create-todo-button");
+	const header = document.getElementById("header");
 
 	const renderProjects = () => {
 		renderProjectsController();
@@ -51,6 +52,12 @@ const dom = (() => {
 		createTodoButton.addEventListener("click", (e) => {
 			e.preventDefault();
 			createTodoEventListner();
+		});
+
+		header.addEventListener("click", () => {
+			renderProjects();
+			renderTodos(null);
+			console.log("logo clicked");
 		});
 	};
 

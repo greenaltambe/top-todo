@@ -11,10 +11,63 @@ const renderTodosController = (project = null) => {
 	console.log("todosInProject", todosInProject);
 
 	todosContainer.innerHTML = "";
+
 	todosInProject.forEach((todo) => {
 		const div = document.createElement("div");
 		div.classList.add("todo-item");
-		div.innerHTML = `<h3>${todo.title}</h3> <p>${todo.description}</p>`;
+		if (todo.completed) {
+			div.classList.add("completed");
+		}
+
+		// Left section
+		const todoItemLeft = document.createElement("div");
+		todoItemLeft.classList.add("todo-item-left");
+
+		const todoUpper = document.createElement("div");
+		todoUpper.classList.add("todo-upper");
+		todoUpper.innerHTML = `
+			<h3>${todo.title}</h3>
+			<p>${todo.description}</p>
+		`;
+
+		let date = new Date(todo.dueDate);
+		if (date < new Date()) {
+			todoUpper.classList.add("overdue");
+		}
+
+		date = date.toDateString();
+
+		const todoLower = document.createElement("div");
+		todoLower.classList.add("todo-lower");
+		todoLower.innerHTML = `
+			<p>Due: ${date}</p>
+			<p>Priority: ${todo.priority}</p>
+			<p>Project: ${todo.project || "None"}</p>
+		`;
+
+		todoItemLeft.appendChild(todoUpper);
+		todoItemLeft.appendChild(todoLower);
+
+		// Right section
+		const todoItemRight = document.createElement("div");
+		todoItemRight.classList.add("todo-item-right");
+
+		const todoCheckBox = document.createElement("input");
+		todoCheckBox.type = "checkbox";
+		todoCheckBox.checked = todo.completed;
+		todoCheckBox.classList.add("todo-checkbox");
+
+		todoCheckBox.addEventListener("change", () => {
+			console.log("todo", todo);
+			todoManager.toggleTodo(todo);
+			renderTodosController(project);
+		});
+
+		todoItemRight.appendChild(todoCheckBox);
+
+		div.appendChild(todoItemLeft);
+		div.appendChild(todoItemRight);
+
 		todosContainer.appendChild(div);
 	});
 };
