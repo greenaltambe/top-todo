@@ -1,4 +1,5 @@
 import Project from "./project";
+import todoManager from "./todoManager";
 
 const projectManager = (() => {
 	let projects = JSON.parse(localStorage.getItem("projects")) || [];
@@ -12,6 +13,9 @@ const projectManager = (() => {
 
 	const removeProject = (project) => {
 		projects = projects.filter((p) => p !== project);
+		todoManager.getTodosByProject(project).forEach((todo) => {
+			todoManager.deleteTodo(todo);
+		});
 		save();
 	};
 

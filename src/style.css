@@ -137,8 +137,20 @@ dialog form select:focus {
 	border-radius: 8px;
 	cursor: pointer;
 	display: flex;
+	gap: 1rem;
+}
+
+.project-item .left-side {
+	display: flex;
 	flex-direction: column;
-	gap: 0.1rem;
+	gap: 0.5rem;
+}
+
+.project-item .right-side {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 0.5rem;
 }
 
 .project-item:hover {
