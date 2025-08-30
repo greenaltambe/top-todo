@@ -4,11 +4,9 @@ import { addErrorClass } from "./util.js";
 
 const renderTodosController = (project = null) => {
 	const todosContainer = document.querySelector(".todos-container");
-	console.log("project", project);
 	let todosInProject = project
 		? todoManager.getTodosByProject(project.title)
 		: todoManager.getAllTodos();
-	console.log("todosInProject", todosInProject);
 
 	todosContainer.innerHTML = "";
 
@@ -30,17 +28,19 @@ const renderTodosController = (project = null) => {
 			<p>${todo.description}</p>
 		`;
 
-		let date = new Date(todo.dueDate);
-		if (date < new Date()) {
-			todoUpper.classList.add("overdue");
+		let dateLabel = "No due date";
+		if (todo.dueDate) {
+			const date = new Date(todo.dueDate);
+			if (date < new Date()) {
+				todoUpper.classList.add("overdue");
+			}
+			dateLabel = date.toDateString();
 		}
-
-		date = date.toDateString();
 
 		const todoLower = document.createElement("div");
 		todoLower.classList.add("todo-lower");
 		todoLower.innerHTML = `
-			<p>Due: ${date}</p>
+			<p>Due: ${dateLabel}</p>
 			<p>Priority: ${todo.priority}</p>
 			<p>Project: ${todo.project || "None"}</p>
 		`;
@@ -52,17 +52,94 @@ const renderTodosController = (project = null) => {
 		const todoItemRight = document.createElement("div");
 		todoItemRight.classList.add("todo-item-right");
 
+		// Checkbox
 		const todoCheckBox = document.createElement("input");
 		todoCheckBox.type = "checkbox";
 		todoCheckBox.checked = todo.completed;
 		todoCheckBox.classList.add("todo-checkbox");
 
 		todoCheckBox.addEventListener("change", () => {
-			console.log("todo", todo);
 			todoManager.toggleTodo(todo);
 			renderTodosController(project);
 		});
 
+		// Edit button
+		const editTodo = document.createElement("button");
+		editTodo.classList.add("edit-todo-button");
+		editTodo.textContent = "Edit";
+
+		editTodo.addEventListener("click", () => {
+			const editTodoDialog = document.getElementById("edit-todo-dialog");
+			editTodoDialog.showModal();
+
+			// Populate form with todo values
+			document.getElementById("edit-todo-title").value = todo.title;
+			document.getElementById("edit-todo-description").value =
+				todo.description;
+			document.getElementById("edit-todo-due-date").value = todo.dueDate
+				? new Date(todo.dueDate).toISOString().split("T")[0]
+				: "";
+			document.getElementById("edit-todo-priority").value = todo.priority;
+
+			const editProjectSelect = document.getElementById(
+				"edit-todo-project-select"
+			);
+			editProjectSelect.innerHTML = "";
+
+			// Default "None"
+			const defaultOption = document.createElement("option");
+			defaultOption.value = "None";
+			defaultOption.textContent = "None";
+			editProjectSelect.appendChild(defaultOption);
+
+			// Add available projects
+			projectManager.getProjects().forEach((proj) => {
+				const option = document.createElement("option");
+				option.value = proj.title;
+				option.textContent = proj.title;
+				if (proj.title === todo.project) {
+					option.selected = true;
+				}
+				editProjectSelect.appendChild(option);
+			});
+
+			// Handle Update
+			const updateBtn = document.getElementById("update-todo-button");
+			updateBtn.onclick = () => {
+				const updatedTodo = {
+					...todo,
+					title: document.getElementById("edit-todo-title").value,
+					description: document.getElementById(
+						"edit-todo-description"
+					).value,
+					dueDate:
+						document.getElementById("edit-todo-due-date").value ||
+						null,
+					priority:
+						document.getElementById("edit-todo-priority").value,
+					project:
+						document.getElementById("edit-todo-project-select")
+							.value === "None"
+							? null
+							: document.getElementById(
+									"edit-todo-project-select"
+							  ).value,
+				};
+				todoManager.updateTodo(todo, updatedTodo);
+				editTodoDialog.close();
+				renderTodosController(project);
+			};
+
+			// Handle Delete
+			const deleteBtn = document.getElementById("delete-todo-button");
+			deleteBtn.onclick = () => {
+				todoManager.deleteTodo(todo);
+				editTodoDialog.close();
+				renderTodosController(project);
+			};
+		});
+
+		todoItemRight.appendChild(editTodo);
 		todoItemRight.appendChild(todoCheckBox);
 
 		div.appendChild(todoItemLeft);
@@ -107,10 +184,8 @@ const createTodoEventListner = () => {
 	const description = document.getElementById("todo-description");
 	const dueDateInput = document.getElementById("todo-due-date");
 
-	let dueDate;
-	if (!dueDateInput.value) {
-		dueDate = null;
-	} else {
+	let dueDate = null;
+	if (dueDateInput.value) {
 		dueDate = new Date(dueDateInput.value);
 		if (dueDate < new Date()) {
 			addErrorClass(dueDateInput);

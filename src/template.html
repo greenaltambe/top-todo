@@ -111,6 +111,64 @@
 					</form>
 				</div>
 			</dialog>
+			<dialog id="edit-todo-dialog" closedby="any">
+				<div>
+					<h2>Edit Todo</h2>
+					<form method="dialog">
+						<div class="form-row">
+							<label for="edit-todo-title">Title</label>
+							<input
+								type="text"
+								name="edit-todo-title"
+								id="edit-todo-title"
+							/>
+						</div>
+						<div class="form-row">
+							<label for="edit-todo-description"
+								>Description</label
+							>
+							<textarea
+								name="edit-todo-description"
+								id="edit-todo-description"
+							></textarea>
+						</div>
+						<div class="form-row">
+							<label for="edit-todo-due-date">Due Date</label>
+							<input
+								type="date"
+								name="edit-todo-due-date"
+								id="edit-todo-due-date"
+							/>
+						</div>
+						<div class="form-row">
+							<label for="edit-todo-priority">Priority</label>
+							<select
+								name="edit-todo-priority"
+								id="edit-todo-priority"
+							>
+								<option value="low">Low</option>
+								<option value="medium">Medium</option>
+								<option value="high">High</option>
+							</select>
+						</div>
+						<div class="form-row">
+							<label for="edit-todo-project-select"
+								>Project</label
+							>
+							<select
+								name="edit-todo-project-select"
+								id="edit-todo-project-select"
+							></select>
+						</div>
+						<div class="form-row">
+							<button id="update-todo-button">Update</button>
+							<button id="delete-todo-button" type="button">
+								Delete
+							</button>
+						</div>
+					</form>
+				</div>
+			</dialog>
 			<div id="add-todo-button">
 				<button>Add Todo</button>
 			</div>

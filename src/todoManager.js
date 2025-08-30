@@ -28,6 +28,18 @@ const todoManager = (() => {
 		return todo;
 	};
 
+	const updateTodo = (todo, updatedFields) => {
+		if (!todo) return;
+
+		todo.title = updatedFields.title;
+		todo.description = updatedFields.description;
+		todo.dueDate = updatedFields.dueDate;
+		todo.priority = updatedFields.priority;
+		todo.project = updatedFields.project;
+
+		save();
+	};
+
 	const deleteTodo = (todo) => {
 		todos = todos.filter((t) => t !== todo);
 		save();
@@ -59,6 +71,7 @@ const todoManager = (() => {
 		getAllTodos,
 		getTodosByProject,
 		toggleTodo,
+		updateTodo,
 	};
 })();
 
